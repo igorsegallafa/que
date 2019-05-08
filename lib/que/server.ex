@@ -53,6 +53,10 @@ defmodule Que.Server do
     GenServer.call(via_worker(worker), {:add_job, worker, arg})
   end
 
+  def cancel(job) do
+    GenServer.call(via_worker(job.worker), {:cancel_job, job})
+  end
+
 
 
 
@@ -91,6 +95,18 @@ defmodule Que.Server do
       |> Que.Queue.process
 
     {:reply, {:ok, job}, queue}
+  end
+
+  @doc false
+  def handle_call({:cancel_job, job}, _from, queue) do
+    queue =
+      queue
+      |> Que.Queue.cancel(job)
+
+    job = %Que.Job{job | status: :cancelled}
+    |> Que.Persistence.update
+
+    {:reply, job, queue}
   end
 
 
