@@ -112,6 +112,7 @@ defmodule Que do
   """
   @spec add(worker :: module, arguments :: term) :: {:ok, %Que.Job{}}
   defdelegate add(worker, arguments), to: Que.ServerSupervisor
+  defdelegate cancel(job), to: Que.Server
 
 end
 

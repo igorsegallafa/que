@@ -164,6 +164,21 @@ defmodule Que.Queue do
 
 
   @doc """
+  Removes the specified Job from `queued`
+  """
+  @spec cancel(queue :: Que.Queue.t, job :: Que.Job.t) :: Que.Queue.t
+  def cancel(%Que.Queue{} = q, %Que.Job{} = job) do
+    queued =
+      queued(q)
+      |> Enum.reject(fn j -> j.id == job.id end)
+
+    %{ q | queued: :queue.from_list(queued) }
+  end
+
+
+
+
+  @doc """
   Returns queued jobs in the Queue
   """
   @spec queued(queue :: Que.Queue.t) :: list(Que.Job.t)
