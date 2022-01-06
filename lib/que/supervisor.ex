@@ -28,11 +28,11 @@ defmodule Que.Supervisor do
   @doc false
   def init(:ok) do
     children = [
-      supervisor(Task.Supervisor, [[name: Que.TaskSupervisor]]),
-      supervisor(Que.ServerSupervisor, [])
+      {Task.Supervisor, name: Que.TaskSupervisor},
+      {Que.ServerSupervisor, []}
     ]
 
-    supervise(children, strategy: :one_for_one)
+    Supervisor.init(children, strategy: :one_for_one)
   end
 
 end
