@@ -27,7 +27,7 @@ Add `que` to your project dependencies in `mix.exs`:
 
 ```elixir
 def deps do
-  [{:que, "~> 0.9.0"}]
+  [{:que, "~> 0.10.1"}]
 end
 ```
 
@@ -157,6 +157,39 @@ defmodule App.Workers.ReportBuilder do
   end
 end
 ```
+
+
+### Setup and Teardown
+
+You can similarly export optional `on_setup/1` and `on_teardown/1` callbacks
+that are respectively run before and after the job is performed (successfully
+or not). But instead of the job arguments, they pass the job struct as an
+argument which holds a lot more internal details that can be useful for custom
+features such as logging, metrics, requeuing and more.
+
+```elixir
+defmodule MyApp.Workers.VideoProcessor do
+  use Que.Worker
+
+  def on_setup(%Que.Job{} = job) do
+    VideoMetrics.record(job.id, :start, process: job.pid, status: :starting)
+  end
+
+  def perform({user, video, options}) do
+    User.notify(user, "Your video is processing, check back later.")
+    FFMPEG.process(video.path, options)
+  end
+
+  def on_teardown(%Que.Job{} = job) do
+    {user, video, _options} = job.arguments
+    link = MyApp.Router.video_path(user.id, video.id)
+
+    VideoMetrics.record(job.id, :end, status: job.status)
+    User.notify(user, "We've finished processing your video. See the results.", link)
+  end
+end
+```
+
 
 Head over to Hexdocs for detailed [`Worker` documentation][docs-worker].
 

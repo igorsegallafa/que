@@ -2,6 +2,20 @@ Changelog
 =========
 
 
+## Version 0.10.1
+
+ - [Enhancement] Pass job instead of job arguments in setup/teardown callbacks
+
+
+
+## Version 0.10.0
+
+ - [Enhancement] Add setup/teardown callbacks to workers
+ - [Bugfix] `ex_utils` is automatically added to the applications list when
+   compiling/building a new release via distillery
+
+
+
 ## Version 0.9.0
 
  - Update [Memento][memento] dependency to v0.3.0
