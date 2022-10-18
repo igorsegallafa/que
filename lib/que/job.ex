@@ -66,7 +66,7 @@ defmodule Que.Job do
         job.worker.perform(job.arguments)
       end)
 
-    %{ job | status: :started, pid: pid, ref: Process.monitor(pid) }
+    %{ job | status: :started, pid: pid, ref: Process.monitor(pid) } |> job.worker.on_update_job_info()
   end
 
 
@@ -86,7 +86,7 @@ defmodule Que.Job do
       job.worker.on_teardown(job)
     end)
 
-    %{ job | status: :completed, pid: nil, ref: nil }
+    %{ job | status: :completed, pid: nil, ref: nil } |> job.worker.on_update_job_info()
   end
 
 
@@ -106,7 +106,7 @@ defmodule Que.Job do
       job.worker.on_teardown(job)
     end)
 
-    %{ job | status: :failed, pid: nil, ref: nil }
+    %{ job | status: :failed, pid: nil, ref: nil } |> job.worker.on_update_job_info()
   end
 end
 
