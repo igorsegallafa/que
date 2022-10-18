@@ -214,7 +214,12 @@ defmodule Que.Worker do
       end
 
 
-      defoverridable [on_success: 1, on_failure: 2, on_setup: 1, on_teardown: 1, concurrency: 0]
+      def on_update_job_info(job) do
+        job
+      end
+
+
+      defoverridable [on_success: 1, on_failure: 2, on_setup: 1, on_teardown: 1, on_update_job_info: 1, concurrency: 0]
 
 
 
