@@ -11,10 +11,7 @@ defmodule Que.Persistence do
 
 
   ## Adapter to delegate all methods to
-  @adapter Que.Persistence.Mnesia
-
-
-
+  def get_adapter(), do: Application.get_env(:que, :persistence_adapter, Que.Persistence.Mnesia)
 
   @doc """
   Finds a `Que.Job` from the database.
@@ -22,7 +19,7 @@ defmodule Que.Persistence do
   Returns the a Job struct if it's found, otherwise `nil`.
   """
   @callback find(id :: integer) :: Que.Job.t | nil
-  defdelegate find(id), to: @adapter
+  def find(id), do: get_adapter().find(id)
 
 
 
@@ -31,7 +28,7 @@ defmodule Que.Persistence do
   Deletes a `Que.Job` from the database.
   """
   @callback destroy(id :: integer) :: :ok | no_return
-  defdelegate destroy(id), to: @adapter
+  def destroy(id), do: get_adapter().destroy(id)
 
 
 
@@ -42,7 +39,7 @@ defmodule Que.Persistence do
   Returns the same Job struct with the `id` value set
   """
   @callback insert(job :: Que.Job.t) :: Que.Job.t
-  defdelegate insert(job), to: @adapter
+  def insert(job), do: get_adapter().insert(job)
 
 
 
@@ -58,7 +55,7 @@ defmodule Que.Persistence do
   Returns the updated job.
   """
   @callback update(job :: Que.Job.t) :: Que.Job.t
-  defdelegate update(job), to: @adapter
+  def update(job), do: get_adapter().update(job)
 
 
 
@@ -67,7 +64,7 @@ defmodule Que.Persistence do
   Returns all `Que.Job`s in the database.
   """
   @callback all :: list(Que.Job.t)
-  defdelegate all, to: @adapter
+  def all, do: get_adapter().all
 
 
 
@@ -76,7 +73,7 @@ defmodule Que.Persistence do
   Returns all `Que.Job`s for the given worker.
   """
   @callback all(worker :: Que.Worker.t) :: list(Que.Job.t)
-  defdelegate all(worker), to: @adapter
+  def all(worker), do: get_adapter().all(worker)
 
 
 
@@ -85,7 +82,7 @@ defmodule Que.Persistence do
   Returns completed `Que.Job`s from the database.
   """
   @callback completed :: list(Que.Job.t)
-  defdelegate completed, to: @adapter
+  def completed, do: get_adapter().completed
 
 
 
@@ -94,7 +91,7 @@ defmodule Que.Persistence do
   Returns completed `Que.Job`s for the given worker.
   """
   @callback completed(worker :: Que.Worker.t) :: list(Que.Job.t)
-  defdelegate completed(worker), to: @adapter
+  def completed(worker), do: get_adapter().completed(worker)
 
 
 
@@ -106,7 +103,7 @@ defmodule Que.Persistence do
   `:queued` or `:started` but not `:failed`.
   """
   @callback incomplete :: list(Que.Job.t)
-  defdelegate incomplete, to: @adapter
+  def incomplete, do: get_adapter().incomplete
 
 
 
@@ -115,7 +112,7 @@ defmodule Que.Persistence do
   Returns incomplete `Que.Job`s for the given worker.
   """
   @callback incomplete(worker :: Que.Worker.t) :: list(Que.Job.t)
-  defdelegate incomplete(worker), to: @adapter
+  def incomplete(worker), do: get_adapter().incomplete(worker)
 
 
 
@@ -124,7 +121,7 @@ defmodule Que.Persistence do
   Returns failed `Que.Job`s from the database.
   """
   @callback failed :: list(Que.Job.t)
-  defdelegate failed, to: @adapter
+  def failed, do: get_adapter().failed
 
 
 
@@ -133,7 +130,7 @@ defmodule Que.Persistence do
   Returns failed `Que.Job`s for the given worker.
   """
   @callback failed(worker :: Que.Worker.t) :: list(Que.Job.t)
-  defdelegate failed(worker), to: @adapter
+  def failed(worker), do: get_adapter().failed(worker)
 
 
 
@@ -146,7 +143,7 @@ defmodule Que.Persistence do
   and is ready to be used.
   """
   @callback initialize :: :ok | :error
-  defdelegate initialize, to: @adapter
+  def initialize, do: get_adapter().initialize
 
 
 
